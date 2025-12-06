@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lkjsxc - Homepage</title>
+    <style>
+        :root {
+            --bg-color: #181818;
+            --card-bg: #222222;
+            --accent-color: #4FC3F7;
+            --text-main: #e0e0e0;
+            --text-sub: #aaaaaa;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            align-items: flex-start;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile-info {
+            flex-grow: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0 0 1rem 0;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-item {
+            background-color: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .info-item .label {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .info-item .value {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .card h3 span {
+            color: white;
+            background-color: white;
+            width: 4px;
+            height: 1.2em;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+
+        .card p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                text-align: left;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header class="profile-header">
+            <div class="avatar">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" translate="no" class="notranslate">
+                    <rect x="0" y="0" width="50" height="50" fill="#0D47A1"/>
+                    <rect x="50" y="0" width="50" height="50" fill="#1E88E5"/>
+                    <rect x="0" y="50" width="50" height="50" fill="#4FC3F7"/>
+                    <rect x="50" y="50" width="50" height="50" fill="#00BCD4"/>
+                    <circle cx="50" cy="50" r="40" fill="#ffffff"/>
+                    <text x="50" y="50" font-family="sans-serif" font-size="25" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#000000">
+                        lkjsxc
+                    </text>
+                </svg>
+            </div>
+            <div class="profile-info">
+                <h1>lkjsxc</h1>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="label">Affiliation</div>
+                        <div class="value">ZEN University (1st Gen)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Favorite Languages</div>
+                        <div class="value">C / Go / Rust</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Hobbies</div>
+                        <div class="value">Reading / Rhythm Games / Nostr</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Favorite Data Structures</div>
+                        <div class="value">Array / RBTree</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Favorite LLMs</div>
+                        <div class="value">qwen3-8b / gpt-oss-20b</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Contact</div>
+                        <div class="value">lkjsxc@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section>
+            <h2>Skills</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3><span></span> C Language</h3>
+                    <p>Longest experience, most skilled, and favorite language. I have built text editors, http server, UEFI applications, and self-made languages. I started in elementary school, but lost all my source code in middle school, so my GitHub doesn't fully reflect my actual knowledge.</p>
+                </div>
+                <div class="card">
+                    <h3><span></span> Infrastructure</h3>
+                    <p>I host game servers like Minecraft and Ark at home, as well as this website and a family photo server. I especially enjoy working with ArchLinux, VirtualBox, DockerCompose, Samba, and k0s.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Projects</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3><span></span> Self-made Text Editor</h3>
+                    <p>Developing a very compact text editor using C language.</p>
+                </div>
+                <div class="card">
+                    <h3><span></span> Self-made Programming Language</h3>
+                    <p>Designing a self-made programming language and developing its own compiler and interpreter running on Scratch.</p>
+                </div>
+                <div class="card">
+                    <h3><span></span> Auto Awesome</h3>
+                    <p>A tool that uses LLMs to investigate specific themes on GitHub and hosts a leaderboard as a website. <br>Sample: <a href="https://nostr-leaderboard.lkjsxc.com/" style="color: var(--accent-color); text-decoration: none;">Nostr Leaderboard</a></p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Links</h2>
+             <div class="card">
+                <p>GitHub: <a href="https://github.com/lkjsxc" style="color: var(--accent-color); text-decoration: none;">@lkjsxc</a></p>
+                <p>X (Twitter): <a href="https://x.com/lkjsxc" style="color: var(--accent-color); text-decoration: none;">@lkjsxc</a></p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+services:
+  homepage:
+    container_name: homepage
+    build: .
+    ports:
+      - "80:80"
+    networks:
+      - nginx
+networks:
+  nginx:
+    external: true
