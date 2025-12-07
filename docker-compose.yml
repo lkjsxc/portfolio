@@ -1,9 +1,7 @@
 services:
-  homepage:
-    container_name: homepage
+  portfolio:
+    container_name: portfolio
     build: .
-    ports:
-      - "80:80"
     networks:
       - nginx
 networks:
