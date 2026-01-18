@@ -6,3 +6,4 @@
 
 ## Parsing Scope
 - Only the request line is parsed; headers are ignored.
+- Parsing is bounded by the request buffer and stops at `\r\n\r\n`.

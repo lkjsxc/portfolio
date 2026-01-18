@@ -1,5 +1,10 @@
 # Routes and Responses
 
+## Response Spec
+Responses are built as an immutable spec:
+- `status`, `reason`, `content_type`, `body`, `body_len`, `send_body`.
+- `send_body` is true for `GET` and false for `HEAD`.
+
 ## `/`
 - Status: `200 OK`
 - `Content-Type: text/html; charset=UTF-8`

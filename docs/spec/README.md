@@ -3,6 +3,9 @@
 Table of contents for system behavior.
 
 - [Overview](overview.md)
+- [Architecture](architecture/README.md)
+	- [Functional Pipeline](architecture/pipeline.md)
+	- [Data Model](architecture/data-model.md)
 - [HTTP](http/README.md)
 	- [Request Line](http/request.md)
 	- [Routes and Responses](http/responses.md)

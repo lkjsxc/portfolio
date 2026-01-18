@@ -10,6 +10,9 @@ Authoritative specification for this repository. If any other document or code c
 
 ## Top-Level Table of Contents
 - [Spec Overview](spec/overview.md)
+- [Architecture](spec/architecture/README.md)
+	- [Functional Pipeline](spec/architecture/pipeline.md)
+	- [Data Model](spec/architecture/data-model.md)
 - [HTTP Spec](spec/http/README.md)
 	- [Request Line](spec/http/request.md)
 	- [Routes and Responses](spec/http/responses.md)
