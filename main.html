@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,8 +38,8 @@
         }
 
         .avatar {
-            width: 150px;
-            height: 150px;
+            width: 250px;
+            height: 250px;
             flex-shrink: 0;
             border-radius: 50%;
             overflow: hidden;
@@ -96,6 +97,27 @@
             gap: 2rem;
         }
 
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-link {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: rgba(79, 195, 247, 0.4);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+        }
+
         .card h3 {
             margin-top: 0;
             display: flex;
@@ -119,13 +141,40 @@
             margin: 0;
         }
 
+        .card .meta {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .card .meta .card-url {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 1px;
+            transition: color 0.2s ease, border-color 0.2s ease;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .card .meta .card-url:hover {
+            color: var(--accent-color);
+            border-color: rgba(79, 195, 247, 0.6);
+        }
+
+        .card .meta-label {
+            color: var(--text-main);
+            font-weight: 600;
+            margin-right: 0.35rem;
+        }
+
         @media (max-width: 768px) {
             .profile-header {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
-            
+
             .info-grid {
                 grid-template-columns: 1fr;
                 text-align: left;
@@ -137,24 +186,31 @@
         }
     </style>
 </head>
+
 <body>
     <div class="main-container">
         <header class="profile-header">
             <div class="avatar">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" translate="no" class="notranslate">
-                    <rect x="0" y="0" width="50" height="50" fill="#0D47A1"/>
-                    <rect x="50" y="0" width="50" height="50" fill="#1E88E5"/>
-                    <rect x="0" y="50" width="50" height="50" fill="#4FC3F7"/>
-                    <rect x="50" y="50" width="50" height="50" fill="#00BCD4"/>
-                    <circle cx="50" cy="50" r="40" fill="#ffffff"/>
-                    <text x="50" y="50" font-family="sans-serif" font-size="25" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#000000">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" translate="no"
+                    class="notranslate">
+                    <rect x="0" y="0" width="50" height="50" fill="#0D47A1" />
+                    <rect x="50" y="0" width="50" height="50" fill="#1E88E5" />
+                    <rect x="0" y="50" width="50" height="50" fill="#4FC3F7" />
+                    <rect x="50" y="50" width="50" height="50" fill="#00BCD4" />
+                    <circle cx="50" cy="50" r="40" fill="#ffffff" />
+                    <text x="50" y="50" font-family="sans-serif" font-size="25" font-weight="bold" text-anchor="middle"
+                        dominant-baseline="middle" fill="#000000">
                         lkjsxc
                     </text>
                 </svg>
             </div>
             <div class="profile-info">
-                <h1>lkjsxc</h1>
+                <h1>lkjsxc / Yoshihito Shinnaka</h1>
                 <div class="info-grid">
+                    <div class="info-item">
+                        <div class="label">Biography</div>
+                        <div class="value">Computer enthusiast</div>
+                    </div>
                     <div class="info-item">
                         <div class="label">Affiliation</div>
                         <div class="value">ZEN University (1st Gen)</div>
@@ -186,36 +242,66 @@
         <section>
             <h2>Projects</h2>
             <div class="grid-2">
-                <div class="card">
+                <a class="card card-link" href="https://github.com/lkjsxc/portfolio">
                     <h3><span></span> Portfolio</h3>
-                    <p>Personal homepage showcasing my skills, projects, and links, implemented in a primitive manner in C with a clean, responsive design.</p>
-                    <p>Repo: <a href="https://github.com/lkjsxc/portfolio" style="color: var(--accent-color); text-decoration: none;">github.com/lkjsxc/portfolio</a></p>
-                </div>
-                <div class="card">
+                    <p>Personal homepage showcasing my skills, projects, and links, implemented in a primitive manner in
+                        C with a clean, responsive design.</p>
+                    <p class="meta"><span class="meta-label">Repo</span><span
+                            class="card-url">github.com/lkjsxc/portfolio</span></p>
+                </a>
+                <a class="card card-link" href="https://github.com/lkjsxc/pcrykh">
                     <h3><span></span> Pcrykh Plugin</h3>
-                    <p>A Minecraft server plugin for configurable achievements, categories, and runtime progress tracking, with an MMORPG focus.</p>
-                    <p>Repo: <a href="https://github.com/lkjsxc/pcrykh" style="color: var(--accent-color); text-decoration: none;">github.com/lkjsxc/pcrykh</a></p>
-                </div>
-                <div class="card">
+                    <p>A Minecraft server plugin for configurable achievements, categories, and runtime progress
+                        tracking, with an MMORPG focus.</p>
+                    <p class="meta"><span class="meta-label">Repo</span><span
+                            class="card-url">github.com/lkjsxc/pcrykh</span></p>
+                </a>
+                <a class="card card-link" href="https://github.com/lkjsxc/zenbukko">
                     <h3><span></span> Zenbukko</h3>
-                    <p>A CLI tool that fetches course videos and uses Whisper for transcription, organizing sessions and materials into a clean local structure.</p>
-                    <p>Repo: <a href="https://github.com/lkjsxc/zenbukko" style="color: var(--accent-color); text-decoration: none;">github.com/lkjsxc/zenbukko</a></p>
-                </div>
-                <div class="card">
+                    <p>A CLI tool that fetches course videos and uses Whisper for transcription, organizing sessions and
+                        materials into a clean local structure.</p>
+                    <p class="meta"><span class="meta-label">Repo</span><span
+                            class="card-url">github.com/lkjsxc/zenbukko</span></p>
+                </a>
+                <a class="card card-link" href="https://nostr-leaderboard.lkjsxc.com/">
                     <h3><span></span> Auto Awesome</h3>
-                    <p>A tool that uses LLMs to investigate specific themes on GitHub and hosts a leaderboard as a website. <br>Sample: <a href="https://nostr-leaderboard.lkjsxc.com/" style="color: var(--accent-color); text-decoration: none;">Nostr Leaderboard</a></p>
-                </div>
+                    <p>A tool that uses LLMs to investigate specific themes on GitHub and hosts a leaderboard as a
+                        website.</p>
+                    <p class="meta"><span class="meta-label">Sample</span><span
+                            class="card-url">nostr-leaderboard.lkjsxc.com</span></p>
+                </a>
             </div>
         </section>
-        
+
         <section>
             <h2>Links</h2>
-             <div class="card">
-                <p>GitHub: <a href="https://github.com/lkjsxc" style="color: var(--accent-color); text-decoration: none;">@lkjsxc</a></p>
-                <p>X (Twitter): <a href="https://x.com/lkjsxc" style="color: var(--accent-color); text-decoration: none;">@lkjsxc</a></p>
-                <p>Discord Server: <a href="https://discord.com/invite/yFtY7ym4DA" style="color: var(--accent-color); text-decoration: none;">lkjsxc-server</a></p>
+            <div class="grid-2">
+                <a class="card card-link" href="https://github.com/lkjsxc">
+                    <h3><span></span> GitHub</h3>
+                    <p>Code repositories and open-source projects.</p>
+                    <p class="meta"><span class="meta-label">Profile</span><span
+                            class="card-url">github.com/lkjsxc</span></p>
+                </a>
+                <a class="card card-link" href="https://x.com/lkjsxc">
+                    <h3><span></span> X (Twitter)</h3>
+                    <p>Short updates, posts, and project notes.</p>
+                    <p class="meta"><span class="meta-label">Handle</span><span class="card-url">x.com/lkjsxc</span></p>
+                </a>
+                <a class="card card-link" href="https://njump.me/npub1puu2lv3uasc9wrhxf7dy4gyey2fetmpnw8zlapn7p8y3z9yqq9wsve28r2">
+                    <h3><span></span> Nostr</h3>
+                    <p>Decentralized profile and updates for lkjsxc.</p>
+                    <p class="meta"><span class="meta-label">Profile</span><span
+                            class="card-url">njump.me/npub1puu2lv3uasc9wrhxf7dy4gyey2fetmpnw8zlapn7p8y3z9yqq9wsve28r2</span></p>
+                </a>
+                <a class="card card-link" href="https://discord.com/invite/yFtY7ym4DA">
+                    <h3><span></span> Discord Server</h3>
+                    <p>Community chat and project discussions.</p>
+                    <p class="meta"><span class="meta-label">Invite</span><span
+                            class="card-url">discord.com/invite/yFtY7ym4DA</span></p>
+                </a>
             </div>
         </section>
     </div>
 </body>
+
 </html>
