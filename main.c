@@ -1,5 +1,4 @@
 #define _POSIX_C_SOURCE 200809L
-#include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -16,10 +15,10 @@
 #include <time.h>
 #include <unistd.h>
 
-#define FILENAME "main.html"
-#define SERVER_PORT "8080"
+#define DEFAULT_CONTENT_PATH "/main.html"
+#define DEFAULT_SERVER_PORT "8080"
 #define REQUEST_MAX_BYTES 8192
-#define IO_TIMEOUT_SECONDS 5
+#define DEFAULT_IO_TIMEOUT_SECONDS 5
 
 typedef struct {
     char* data;
@@ -31,17 +30,56 @@ typedef struct {
     nfds_t fds_len;
 } HttpServer;
 
+typedef struct {
+    const char* content_path;
+    const char* port;
+    int io_timeout_seconds;
+} AppConfig;
+
 static ContentProvider AppContent;
 static HttpServer AppServer;
+static AppConfig AppSettings;
 
 static void die_perror(const char* msg) {
     perror(msg);
     exit(EXIT_FAILURE);
 }
 
+static const char* env_or_default(const char* name, const char* fallback) {
+    const char* value = getenv(name);
+    if (!value || value[0] == '\0') {
+        return fallback;
+    }
+    return value;
+}
+
+static int parse_positive_int(const char* value, int fallback) {
+    if (!value || value[0] == '\0') {
+        return fallback;
+    }
+
+    errno = 0;
+    char* end = NULL;
+    long parsed = strtol(value, &end, 10);
+    if (errno != 0 || end == value || *end != '\0') {
+        return fallback;
+    }
+    if (parsed <= 0 || parsed > INT_MAX) {
+        return fallback;
+    }
+    return (int)parsed;
+}
+
+static void config_init() {
+    AppSettings.content_path = env_or_default("CONTENT_PATH", DEFAULT_CONTENT_PATH);
+    AppSettings.port = env_or_default("PORT", DEFAULT_SERVER_PORT);
+    AppSettings.io_timeout_seconds = parse_positive_int(getenv("IO_TIMEOUT_SECONDS"),
+                                                        DEFAULT_IO_TIMEOUT_SECONDS);
+}
+
 static void set_socket_timeouts(int fd) {
     struct timeval tv;
-    tv.tv_sec = IO_TIMEOUT_SECONDS;
+    tv.tv_sec = AppSettings.io_timeout_seconds;
     tv.tv_usec = 0;
 
     (void)setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
@@ -100,7 +138,8 @@ static void send_response(int client_socket,
                           const char* reason,
                           const char* content_type,
                           const void* body,
-                          size_t body_len) {
+                          size_t body_len,
+                          int send_body) {
     char date[64];
     http_date(date);
 
@@ -141,13 +180,13 @@ static void send_response(int client_socket,
     if (send_all(client_socket, header, (size_t)header_len) != 0) {
         return;
     }
-    if (body_len > 0) {
+    if (send_body && body_len > 0) {
         (void)send_all(client_socket, body, body_len);
     }
 }
 
 static void content_init() {
-    int fd = open(FILENAME, O_RDONLY);
+    int fd = open(AppSettings.content_path, O_RDONLY);
     if (fd < 0) {
         die_perror("Failed to open content file");
     }
@@ -185,14 +224,25 @@ static void content_init() {
     close(fd);
 
     if (got != size) {
-        fprintf(stderr, "Short read for %s (expected %zu, got %zu)\n", FILENAME, size, got);
+        fprintf(stderr,
+                "Short read for %s (expected %zu, got %zu)\n",
+                AppSettings.content_path,
+                size,
+                got);
         exit(EXIT_FAILURE);
     }
 
-    fprintf(stderr, "[Content] Loaded %zu bytes from %s\n", AppContent.length, FILENAME);
+    fprintf(stderr,
+            "[Content] Loaded %zu bytes from %s\n",
+            AppContent.length,
+            AppSettings.content_path);
 }
 
-static int request_is_root_get(const char* req) {
+static int parse_request_line(const char* req,
+                              const char** method,
+                              size_t* method_len,
+                              const char** target,
+                              size_t* target_len) {
     const char* line_end = strstr(req, "\r\n");
     if (!line_end) {
         return 0;
@@ -203,10 +253,8 @@ static int request_is_root_get(const char* req) {
         return 0;
     }
 
-    size_t method_len = (size_t)(sp1 - req);
-    if (method_len != 3 || memcmp(req, "GET", 3) != 0) {
-        return 0;
-    }
+    *method = req;
+    *method_len = (size_t)(sp1 - req);
 
     const char* target_start = sp1 + 1;
     const char* sp2 = memchr(target_start, ' ', (size_t)(line_end - target_start));
@@ -214,23 +262,25 @@ static int request_is_root_get(const char* req) {
         return 0;
     }
 
-    size_t target_len = (size_t)(sp2 - target_start);
-    if (target_len == 0) {
+    *target = target_start;
+    *target_len = (size_t)(sp2 - target_start);
+    return *target_len > 0;
+}
+
+static int method_is(const char* method, size_t method_len, const char* expected) {
+    size_t expected_len = strlen(expected);
+    return method_len == expected_len && memcmp(method, expected, expected_len) == 0;
+}
+
+static int path_equals(const char* target, size_t target_len, const char* path) {
+    if (target_len == 0 || target[0] != '/') {
         return 0;
     }
 
-    if (target_start[0] != '/') {
-        return 0;
-    }
-
-    const char* q = memchr(target_start, '?', target_len);
-    size_t path_len = q ? (size_t)(q - target_start) : target_len;
-
-    if (path_len == 1 && target_start[0] == '/') {
-        return 1;
-    }
-
-    return 0;
+    const char* q = memchr(target, '?', target_len);
+    size_t path_len = q ? (size_t)(q - target) : target_len;
+    size_t expected_len = strlen(path);
+    return path_len == expected_len && memcmp(target, path, expected_len) == 0;
 }
 
 static void handle_client(int client_socket) {
@@ -258,22 +308,69 @@ static void handle_client(int client_socket) {
         }
     }
 
-    if (request_is_root_get(req)) {
+    const char* method = NULL;
+    const char* target = NULL;
+    size_t method_len = 0;
+    size_t target_len = 0;
+
+    if (!parse_request_line(req, &method, &method_len, &target, &target_len)) {
+        static const char body[] = "Bad Request\n";
+        send_response(client_socket,
+                      400,
+                      "Bad Request",
+                      "text/plain; charset=UTF-8",
+                      body,
+                      sizeof(body) - 1,
+                      1);
+        return;
+    }
+
+    int is_get = method_is(method, method_len, "GET");
+    int is_head = method_is(method, method_len, "HEAD");
+    if (!is_get && !is_head) {
+        static const char body[] = "Method Not Allowed\n";
+        send_response(client_socket,
+                      405,
+                      "Method Not Allowed",
+                      "text/plain; charset=UTF-8",
+                      body,
+                      sizeof(body) - 1,
+                      1);
+        return;
+    }
+
+    int send_body = is_get ? 1 : 0;
+    if (path_equals(target, target_len, "/")) {
         send_response(client_socket,
                       200,
                       "OK",
                       "text/html; charset=UTF-8",
                       AppContent.data,
-                      AppContent.length);
-    } else {
-        static const char body[] = "Not Found\n";
+                      AppContent.length,
+                      send_body);
+        return;
+    }
+
+    if (path_equals(target, target_len, "/healthz")) {
+        static const char body[] = "ok\n";
         send_response(client_socket,
-                      404,
-                      "Not Found",
+                      200,
+                      "OK",
                       "text/plain; charset=UTF-8",
                       body,
-                      sizeof(body) - 1);
+                      sizeof(body) - 1,
+                      send_body);
+        return;
     }
+
+    static const char body[] = "Not Found\n";
+    send_response(client_socket,
+                  404,
+                  "Not Found",
+                  "text/plain; charset=UTF-8",
+                  body,
+                  sizeof(body) - 1,
+                  send_body);
 }
 
 static void server_init() {
@@ -286,7 +383,7 @@ static void server_init() {
     hints.ai_flags = AI_PASSIVE;
 
     struct addrinfo* res = NULL;
-    int gai = getaddrinfo(NULL, SERVER_PORT, &hints, &res);
+    int gai = getaddrinfo(NULL, AppSettings.port, &hints, &res);
     if (gai != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai));
         exit(EXIT_FAILURE);
@@ -344,8 +441,8 @@ static void server_init() {
         die_perror("Failed to bind any listen socket");
     }
 
-    fprintf(stderr, "[Server] Listening on port %s (%s%s)\n",
-            SERVER_PORT,
+        fprintf(stderr, "[Server] Listening on port %s (%s%s)\n",
+            AppSettings.port,
             have_v6 ? "IPv6" : "",
             (have_v6 && have_v4) ? "+IPv4" : (have_v4 ? "IPv4" : ""));
 }
@@ -391,6 +488,7 @@ static void server_start() {
 
 int main() {
     (void)signal(SIGPIPE, SIG_IGN);
+    config_init();
     content_init();
     server_init();
     server_start();
