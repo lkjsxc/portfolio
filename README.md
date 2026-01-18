@@ -1,0 +1,38 @@
+# Portfolio HTTP Server
+
+Single-process HTTP server that serves one static HTML file at `/` and a health endpoint at `/healthz`.
+
+## Highlights
+- Serves a configured HTML file from memory.
+- Handles `GET` and `HEAD` requests.
+- Routes: `/` and `/healthz`.
+- Defaults: `PORT=8080`, `CONTENT_PATH=/main.html`.
+
+## Quick start (local)
+1. Compile:
+
+   ```sh
+   gcc -O2 -o main src/*.c
+   ```
+
+2. Run (use a relative content path for local runs):
+
+   ```sh
+   CONTENT_PATH=main.html ./main
+   ```
+
+## Configuration
+- `PORT`: TCP port to bind (default `8080`).
+- `CONTENT_PATH`: Path to the HTML file (default `/main.html`).
+
+## Docs
+- Full documentation index: [docs/README.md](docs/README.md)
+- Build and run (local): [docs/build/local/README.md](docs/build/local/README.md)
+- Container notes: [docs/build/container/README.md](docs/build/container/README.md)
+- Specification overview: [docs/spec/overview.md](docs/spec/overview.md)
+
+## Content
+- Default HTML asset: [main.html](main.html)
+
+## License
+See [LICENSE](LICENSE).
