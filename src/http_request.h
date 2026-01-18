@@ -10,8 +10,25 @@ typedef struct {
     size_t target_len;
 } HttpRequestLine;
 
-int http_parse_request_line(const char* req, HttpRequestLine* out);
-int http_method_is(const HttpRequestLine* req, const char* expected);
-int http_path_equals(const HttpRequestLine* req, const char* path);
+typedef enum {
+    HTTP_METHOD_UNKNOWN = 0,
+    HTTP_METHOD_GET,
+    HTTP_METHOD_HEAD
+} HttpMethod;
+
+typedef enum {
+    HTTP_ROUTE_UNKNOWN = 0,
+    HTTP_ROUTE_ROOT,
+    HTTP_ROUTE_HEALTHZ
+} HttpRoute;
+
+typedef struct {
+    int ok;
+    HttpRequestLine line;
+} HttpParseResult;
+
+HttpParseResult http_parse_request_line(const char* req);
+HttpMethod http_method_from_line(const HttpRequestLine* req);
+HttpRoute http_route_from_line(const HttpRequestLine* req);
 
 #endif

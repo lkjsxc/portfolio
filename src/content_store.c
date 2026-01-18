@@ -13,7 +13,8 @@ static void die_perror(const char* msg) {
     exit(EXIT_FAILURE);
 }
 
-void content_load(Content* out, const char* path) {
+Content content_load(const char* path) {
+    Content content = {0};
     int fd = open(path, O_RDONLY);
     if (fd < 0) {
         die_perror("Failed to open content file");
@@ -29,15 +30,15 @@ void content_load(Content* out, const char* path) {
     }
 
     size_t size = (size_t)st.st_size;
-    out->data = malloc(size);
-    if (!out->data && size != 0) {
+    content.data = malloc(size);
+    if (!content.data && size != 0) {
         die_perror("Allocation failed");
     }
-    out->length = size;
+    content.length = size;
 
     size_t got = 0;
     while (got < size) {
-        ssize_t n = read(fd, out->data + got, size - got);
+        ssize_t n = read(fd, content.data + got, size - got);
         if (n < 0) {
             if (errno == EINTR) {
                 continue;
@@ -60,7 +61,8 @@ void content_load(Content* out, const char* path) {
         exit(EXIT_FAILURE);
     }
 
-    fprintf(stderr, "[Content] Loaded %zu bytes from %s\n", out->length, path);
+    fprintf(stderr, "[Content] Loaded %zu bytes from %s\n", content.length, path);
+    return content;
 }
 
 void content_free(Content* content) {

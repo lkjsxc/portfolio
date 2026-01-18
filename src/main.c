@@ -8,11 +8,8 @@
 int main() {
     (void)signal(SIGPIPE, SIG_IGN);
 
-    AppConfig config;
-    Content content;
-
-    config_load(&config);
-    content_load(&content, config.content_path);
+    AppConfig config = config_load();
+    Content content = content_load(config.content_path);
     server_run(&config, &content);
     content_free(&content);
     return 0;

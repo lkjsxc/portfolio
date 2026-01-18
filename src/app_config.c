@@ -30,9 +30,11 @@ static int parse_positive_int(const char* value, int fallback) {
     return (int)parsed;
 }
 
-void config_load(AppConfig* out) {
-    out->content_path = env_or_default("CONTENT_PATH", DEFAULT_CONTENT_PATH);
-    out->port = env_or_default("PORT", DEFAULT_SERVER_PORT);
-    out->io_timeout_seconds = parse_positive_int(getenv("IO_TIMEOUT_SECONDS"),
-                                                 DEFAULT_IO_TIMEOUT_SECONDS);
+AppConfig config_load(void) {
+    AppConfig config;
+    config.content_path = env_or_default("CONTENT_PATH", DEFAULT_CONTENT_PATH);
+    config.port = env_or_default("PORT", DEFAULT_SERVER_PORT);
+    config.io_timeout_seconds = parse_positive_int(getenv("IO_TIMEOUT_SECONDS"),
+                                                   DEFAULT_IO_TIMEOUT_SECONDS);
+    return config;
 }

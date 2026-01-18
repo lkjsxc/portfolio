@@ -50,13 +50,7 @@ static int send_all(int fd, const void* buf, size_t len) {
     return 0;
 }
 
-void http_send_response(int client_socket,
-                        int status,
-                        const char* reason,
-                        const char* content_type,
-                        const void* body,
-                        size_t body_len,
-                        int send_body) {
+void http_send_response(int client_socket, const HttpResponseSpec* response) {
     char date[64];
     http_date(date);
 
@@ -71,11 +65,11 @@ void http_send_response(int client_socket,
                               "Content-Length: %zu\r\n"
                               "Connection: close\r\n"
                               "\r\n",
-                              status,
-                              reason,
+                              response->status,
+                              response->reason,
                               date,
-                              content_type,
-                              body_len);
+                              response->content_type,
+                              response->body_len);
     } else {
         header_len = snprintf(header,
                               sizeof(header),
@@ -84,10 +78,10 @@ void http_send_response(int client_socket,
                               "Content-Length: %zu\r\n"
                               "Connection: close\r\n"
                               "\r\n",
-                              status,
-                              reason,
-                              content_type,
-                              body_len);
+                              response->status,
+                              response->reason,
+                              response->content_type,
+                              response->body_len);
     }
 
     if (header_len < 0 || (size_t)header_len >= sizeof(header)) {
@@ -97,7 +91,7 @@ void http_send_response(int client_socket,
     if (send_all(client_socket, header, (size_t)header_len) != 0) {
         return;
     }
-    if (send_body && body_len > 0) {
-        (void)send_all(client_socket, body, body_len);
+    if (response->send_body && response->body_len > 0) {
+        (void)send_all(client_socket, response->body, response->body_len);
     }
 }

@@ -3,12 +3,15 @@
 
 #include <stddef.h>
 
-void http_send_response(int client_socket,
-                        int status,
-                        const char* reason,
-                        const char* content_type,
-                        const void* body,
-                        size_t body_len,
-                        int send_body);
+typedef struct {
+    int status;
+    const char* reason;
+    const char* content_type;
+    const void* body;
+    size_t body_len;
+    int send_body;
+} HttpResponseSpec;
+
+void http_send_response(int client_socket, const HttpResponseSpec* response);
 
 #endif

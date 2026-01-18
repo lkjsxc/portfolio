@@ -8,7 +8,7 @@ typedef struct {
     size_t length;
 } Content;
 
-void content_load(Content* out, const char* path);
+Content content_load(const char* path);
 void content_free(Content* content);
 
 #endif

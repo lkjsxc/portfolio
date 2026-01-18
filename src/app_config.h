@@ -11,6 +11,6 @@ typedef struct {
 #define DEFAULT_SERVER_PORT "8080"
 #define DEFAULT_IO_TIMEOUT_SECONDS 5
 
-void config_load(AppConfig* out);
+AppConfig config_load(void);
 
 #endif
