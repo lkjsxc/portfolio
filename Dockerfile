@@ -2,9 +2,9 @@ FROM gcc:14 as builder
 
 WORKDIR /app
 
-COPY main.c .
+COPY src/ src/
 
-RUN gcc -static -O2 -o main main.c
+RUN gcc -static -O2 -o main src/*.c
 
 FROM scratch
 
