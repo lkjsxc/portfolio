@@ -166,10 +166,12 @@ void server_run(const AppConfig* config, const Content* content) {
         .config = config,
         .content = content,
     };
-    AsyncPool pool = async_pool_start((size_t)config->async_workers,
-                                      (size_t)config->async_queue_size,
-                                      handle_client_task,
-                                      &worker);
+    AsyncPool pool;
+    async_pool_start(&pool,
+                     (size_t)config->async_workers,
+                     (size_t)config->async_queue_size,
+                     handle_client_task,
+                     &worker);
     (void)have_v4;
     (void)have_v6;
     server_loop(&server, &pool);

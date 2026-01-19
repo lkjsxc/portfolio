@@ -43,40 +43,42 @@ static void* worker_main(void* arg) {
     return NULL;
 }
 
-AsyncPool async_pool_start(size_t worker_count,
-                           size_t queue_size,
-                           AsyncTaskFn task,
-                           void* ctx) {
+void async_pool_start(AsyncPool* pool,
+                      size_t worker_count,
+                      size_t queue_size,
+                      AsyncTaskFn task,
+                      void* ctx) {
     if (worker_count == 0 || queue_size == 0 || task == NULL) {
         die_message("Async pool requires workers, queue size, and task");
     }
 
-    AsyncPool pool;
-    memset(&pool, 0, sizeof(pool));
-    pool.capacity = queue_size;
-    pool.thread_count = worker_count;
-    pool.task = task;
-    pool.ctx = ctx;
+    if (!pool) {
+        die_message("Async pool requires a valid destination");
+    }
 
-    pool.queue = calloc(queue_size, sizeof(int));
-    if (!pool.queue) {
+    memset(pool, 0, sizeof(*pool));
+    pool->capacity = queue_size;
+    pool->thread_count = worker_count;
+    pool->task = task;
+    pool->ctx = ctx;
+
+    pool->queue = calloc(queue_size, sizeof(int));
+    if (!pool->queue) {
         die_message("Failed to allocate async queue");
     }
-    pool.threads = calloc(worker_count, sizeof(pthread_t));
-    if (!pool.threads) {
+    pool->threads = calloc(worker_count, sizeof(pthread_t));
+    if (!pool->threads) {
         die_message("Failed to allocate async worker threads");
     }
 
-    die_pthread(pthread_mutex_init(&pool.mutex, NULL), "pthread_mutex_init");
-    die_pthread(pthread_cond_init(&pool.has_items, NULL), "pthread_cond_init");
-    die_pthread(pthread_cond_init(&pool.has_space, NULL), "pthread_cond_init");
+    die_pthread(pthread_mutex_init(&pool->mutex, NULL), "pthread_mutex_init");
+    die_pthread(pthread_cond_init(&pool->has_items, NULL), "pthread_cond_init");
+    die_pthread(pthread_cond_init(&pool->has_space, NULL), "pthread_cond_init");
 
     for (size_t i = 0; i < worker_count; i++) {
-        die_pthread(pthread_create(&pool.threads[i], NULL, worker_main, &pool),
+        die_pthread(pthread_create(&pool->threads[i], NULL, worker_main, pool),
                     "pthread_create");
     }
-
-    return pool;
 }
 
 void async_pool_submit(AsyncPool* pool, int client_fd) {

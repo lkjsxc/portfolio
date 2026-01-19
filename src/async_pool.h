@@ -22,10 +22,11 @@ typedef struct {
     size_t thread_count;
 } AsyncPool;
 
-AsyncPool async_pool_start(size_t worker_count,
-                           size_t queue_size,
-                           AsyncTaskFn task,
-                           void* ctx);
+void async_pool_start(AsyncPool* pool,
+                      size_t worker_count,
+                      size_t queue_size,
+                      AsyncTaskFn task,
+                      void* ctx);
 void async_pool_submit(AsyncPool* pool, int client_fd);
 void async_pool_stop(AsyncPool* pool);
 
