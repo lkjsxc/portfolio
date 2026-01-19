@@ -24,6 +24,9 @@ Single-process HTTP server that serves one static HTML file at `/` and a health 
 ## Configuration
 - `PORT`: TCP port to bind (default `8080`).
 - `CONTENT_PATH`: Path to the HTML file (default `/main.html`).
+- `IO_TIMEOUT_SECONDS`: Socket send/receive timeout in seconds (default `5`).
+- `ASYNC_WORKERS`: Worker thread count for async processing (default `4`).
+- `ASYNC_QUEUE_SIZE`: Dispatch queue capacity for async processing (default `128`).
 
 ## Docs
 - Full documentation index: [docs/README.md](docs/README.md)

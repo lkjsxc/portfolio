@@ -11,6 +11,7 @@ Single-process HTTP server that serves one static HTML file at `/` and a health 
 ## Behavior Summary
 - Listens on a configured TCP port (default: 8080).
 - Supports IPv4 and IPv6 (best-effort binding).
+- Accepts connections on the main thread and dispatches them to an async worker pool.
 - Handles only `GET` and `HEAD` requests.
 - Routes:
   - `/` -> serves the configured HTML content.

@@ -11,3 +11,9 @@ Configuration is provided via environment variables.
 - `IO_TIMEOUT_SECONDS`
   - Positive integer for socket send/receive timeouts.
   - Default: `5`.
+- `ASYNC_WORKERS`
+  - Positive integer for worker thread count.
+  - Default: `4`.
+- `ASYNC_QUEUE_SIZE`
+  - Positive integer for the async dispatch queue capacity.
+  - Default: `128`.
