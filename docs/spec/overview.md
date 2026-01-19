@@ -1,7 +1,7 @@
 # Overview
 
 ## Scope
-Single-process HTTP server that serves one static HTML file at `/` and a health endpoint at `/healthz`.
+Single-process HTTP server that serves one static HTML file at `/`.
 
 ## Design Principles
 - Functional core, imperative shell. Pure functions decide how to respond.
@@ -15,7 +15,6 @@ Single-process HTTP server that serves one static HTML file at `/` and a health 
 - Handles only `GET` and `HEAD` requests.
 - Routes:
   - `/` -> serves the configured HTML content.
-  - `/healthz` -> serves a plain-text health response.
 - Any other path returns `404`.
 - Any unsupported method returns `405`.
 - Malformed request lines return `400`.

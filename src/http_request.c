@@ -62,8 +62,5 @@ HttpRoute http_route_from_line(const HttpRequestLine* req) {
     if (token_equals(req->target, path_len, "/")) {
         return HTTP_ROUTE_ROOT;
     }
-    if (token_equals(req->target, path_len, "/healthz")) {
-        return HTTP_ROUTE_HEALTHZ;
-    }
     return HTTP_ROUTE_UNKNOWN;
 }

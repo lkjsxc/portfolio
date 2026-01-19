@@ -91,19 +91,12 @@ static HttpResponseSpec response_not_found(int send_body) {
     return response_plain(404, "Not Found", body, sizeof(body) - 1, send_body);
 }
 
-static HttpResponseSpec response_healthz(int send_body) {
-    static const char body[] = "ok\n";
-    return response_plain(200, "OK", body, sizeof(body) - 1, send_body);
-}
-
 static HttpResponseSpec response_for_route(HttpRoute route,
                                            const Content* content,
                                            int send_body) {
     switch (route) {
         case HTTP_ROUTE_ROOT:
             return response_html_ok(content, send_body);
-        case HTTP_ROUTE_HEALTHZ:
-            return response_healthz(send_body);
         case HTTP_ROUTE_UNKNOWN:
         default:
             return response_not_found(send_body);

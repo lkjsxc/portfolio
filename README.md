@@ -1,11 +1,11 @@
 # Portfolio HTTP Server
 
-Single-process HTTP server that serves one static HTML file at `/` and a health endpoint at `/healthz`.
+Single-process HTTP server that serves one static HTML file at `/`.
 
 ## Highlights
 - Serves a configured HTML file from memory.
 - Handles `GET` and `HEAD` requests.
-- Routes: `/` and `/healthz`.
+- Routes: `/` only.
 - Defaults: `PORT=8080`, `CONTENT_PATH=/main.html`.
 
 ## Quick start (local)

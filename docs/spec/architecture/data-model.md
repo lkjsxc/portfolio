@@ -17,7 +17,7 @@ HttpMethod = GET | HEAD | UNKNOWN
 
 ## Route Classification
 ```
-HttpRoute = ROOT | HEALTHZ | UNKNOWN
+HttpRoute = ROOT | UNKNOWN
 ```
 
 ## Parse Result (Result-like)

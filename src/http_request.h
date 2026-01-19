@@ -18,8 +18,7 @@ typedef enum {
 
 typedef enum {
     HTTP_ROUTE_UNKNOWN = 0,
-    HTTP_ROUTE_ROOT,
-    HTTP_ROUTE_HEALTHZ
+    HTTP_ROUTE_ROOT
 } HttpRoute;
 
 typedef struct {
