@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include "server.h"
 
+#include "async_pool.h"
 #include "request_handler.h"
 
 #include <errno.h>
@@ -17,6 +18,11 @@ typedef struct {
     int fds[2];
     nfds_t fds_len;
 } HttpServer;
+
+typedef struct {
+    const AppConfig* config;
+    const Content* content;
+} WorkerContext;
 
 static void die_perror(const char* msg) {
     perror(msg);
@@ -108,9 +114,13 @@ static HttpServer server_init(const AppConfig* config, int* out_has_v4, int* out
     return server;
 }
 
-static void server_loop(const HttpServer* server,
-                        const AppConfig* config,
-                        const Content* content) {
+static void handle_client_task(int client_fd, void* ctx) {
+    const WorkerContext* worker = (const WorkerContext*)ctx;
+    handle_client(client_fd, worker->config, worker->content);
+    close(client_fd);
+}
+
+static void server_loop(const HttpServer* server, AsyncPool* pool) {
     struct pollfd pfds[2];
     for (nfds_t i = 0; i < server->fds_len; i++) {
         pfds[i].fd = server->fds[i];
@@ -143,8 +153,7 @@ static void server_loop(const HttpServer* server,
                 continue;
             }
 
-            handle_client(client, config, content);
-            close(client);
+            async_pool_submit(pool, client);
         }
     }
 }
@@ -153,7 +162,16 @@ void server_run(const AppConfig* config, const Content* content) {
     int have_v4 = 0;
     int have_v6 = 0;
     HttpServer server = server_init(config, &have_v4, &have_v6);
+    WorkerContext worker = {
+        .config = config,
+        .content = content,
+    };
+    AsyncPool pool = async_pool_start((size_t)config->async_workers,
+                                      (size_t)config->async_queue_size,
+                                      handle_client_task,
+                                      &worker);
     (void)have_v4;
     (void)have_v6;
-    server_loop(&server, config, content);
+    server_loop(&server, &pool);
+    async_pool_stop(&pool);
 }

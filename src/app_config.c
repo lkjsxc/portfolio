@@ -36,5 +36,9 @@ AppConfig config_load(void) {
     config.port = env_or_default("PORT", DEFAULT_SERVER_PORT);
     config.io_timeout_seconds = parse_positive_int(getenv("IO_TIMEOUT_SECONDS"),
                                                    DEFAULT_IO_TIMEOUT_SECONDS);
+    config.async_workers = parse_positive_int(getenv("ASYNC_WORKERS"),
+                                              DEFAULT_ASYNC_WORKERS);
+    config.async_queue_size = parse_positive_int(getenv("ASYNC_QUEUE_SIZE"),
+                                                 DEFAULT_ASYNC_QUEUE_SIZE);
     return config;
 }

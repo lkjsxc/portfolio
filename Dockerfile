@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY src/ src/
 
-RUN gcc -static -O2 -o main src/*.c
+RUN gcc -static -O2 -pthread -o main src/*.c
 
 FROM scratch
 
